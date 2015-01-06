@@ -1,9 +1,21 @@
-(function(ctx, $, undefined) {
-    
-    $(document).ready(init);
+(function (ctx, $, undefined) {
+
+    $(document).ready(function () {
+        calculator.init();
+        bindEvents();
+    });
 
     var calculator = {
-        operate: function() {
+        init: function () {
+            this.operand1 = undefined;
+            this.operand2 = undefined;
+            this.reset = undefined;
+            this.operator = undefined;
+            this.display = $('#txtExpression');
+            this.display.val('');
+        },
+
+        calculateAndDisplay: function () {
             var result;
             switch (this.operator) {
                 case '+':
@@ -12,91 +24,71 @@
                 case '-':
                     result = this.operand1 - this.operand2;
                     break;
-                case '*':
-                    result = this.operand1 * this.operand2;
-                    break;
-                case '/':
-                    result = this.operand1 / this.operand2;
             }
-            // console.log(this.operand1);
-            // console.log(this.operator);
-            // console.log(this.operand2);
-            // console.log("result: " + result);
             this.operand1 = result;
             this.operand2 = null;
             this.operator = null;
-            this.reset = true;
             this.display.val(result);
+            this.reset = true;
         },
-        reset: function() {
-            this.operand1 = undefined;
-            this.operand2 = undefined;
-            this.reset = undefined;
-            this.operator = undefined;
+
+        getText: function () {
+            return this.display.val();
+        },
+
+        setText: function (value) {
+            this.display.val(value);
         }
     };
 
     var handlers = {
         evaluate: function () {
             if(calculator.operator) {
-                calculator.operand2 = parseFloat(calculator.display.val());
-                 calculator.operate();
-            } 
-        }, 
+                calculator.operand2 = parseFloat(calculator.getText());
+                 calculator.calculateAndDisplay();
+            }
+        },
 
         digit: function () {
             if(calculator.reset) {
-                calculator.display.val('');
+                calculator.setText('');
                 calculator.reset = false;
             }
-            calculator.display.val(calculator.display.val() + $(this).val());
-            // console.log('Digit pressed');
+            calculator.setText(calculator.getText() + $(this).val());
         },
-        
-        special: function () {
-            // console.log('Special pressed');
+
+        reset: function () {
+            calculator.init();
         },
 
         operator: function () {
-            console.log('Before: ' + calculator.operand1 + ' ' + calculator.operator + ' ' + calculator.operand2);
-            // console.log('Operator pressed');
-            var operator = $(this).val();
-            if(calculator.display.val() === '')
+            var operator = $(this).val(),
+                operand = parseFloat(calculator.getText());
+            if(calculator.getText() === '')
                 return;
             if(calculator.operator) {
-                calculator.operand2 = parseFloat(calculator.display.val());
-                calculator.operate();
+                calculator.operand2 = operand;
+                calculator.calculateAndDisplay();
+                calculator.operator = operator;
             } else {
                 if(calculator.operand1) {
-                    calculator.operand2 = parseFloat(calculator.display.val());
-                    calculator.operate();
+                    calculator.operand2 = operand;
+                    calculator.calculateAndDisplay();
                     calculator.operator = operator;
                 } else {
                     calculator.operator = operator;
-                    calculator.operand1 = parseFloat(calculator.display.val());
+                    calculator.operand1 = operand;
                     calculator.reset = true;
                 }
             }
-            console.log('After: ' + calculator.operand1 + ' ' + calculator.operator + ' ' + calculator.operand2);
         }
     };
 
     function bindEvents () {
-        // console.log('binding events..');
         $('input.digit').click(handlers.digit);
         $('input.operator').click(handlers.operator);
-        $('input.special').click(handlers.special);
+        $('#reset').click(handlers.reset);
         $('#evaluate').click(handlers.evaluate);
     }
-
-    function init() {
-        // console.log('Init..');
-        calculator.display = $('#txtExpression');
-        bindEvents();
-    };
-
-    ctx.processPrivateData = function () {
-    //this way we will publically
-    };
 
 })(window.APP = window.APP || {}, jQuery);

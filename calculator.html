@@ -3,7 +3,6 @@
 <head>
 	<title>Simple Calculator</title>
 	<!-- <link rel="stylesheet" type="text/css" href="Sharang_Dashputre-Calcuator.css"> -->
-	<script src="vendor/js/jquery-2.1.3.min.js"></script>
 </head>
 <body>
 	<div>
@@ -49,7 +48,6 @@
 					<input type="button" value="0" class="digit">
 				</td>
 				<td>
-					<input type="button" value="." class="digit">
 				</td>
 				<td>
 					<input type="button" value="+" class="operator">
@@ -60,10 +58,8 @@
 					<input type="button" value="-" class="operator">
 				</td>
 				<td>
-					<input type="button" value="*" class="operator">
 				</td>
 				<td>
-					<input type="button" value="/" class="operator">
 				</td>
 				<td>
 					<input type="button" value="=" id="evaluate">
@@ -71,12 +67,12 @@
 			</tr>
 			<tr>
 				<td colspan="4" align="center">
-					<input type="button" value="BackSpace" class="special">
-					<input type="button" value="Reset" class="special">
+					<input type="button" value="Reset" id="reset">
 				</td>
 			</tr>
 		</table>
 	</div>
+	<script src="vendor/js/jquery-2.1.3.min.js"></script>
 	<script src="calculator.js"></script>
 </body>
 </html>
