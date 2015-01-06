@@ -7,28 +7,25 @@
 
     var calculator = {
         init: function () {
-            this.operand1 = undefined;
-            this.operand2 = undefined;
-            this.reset = undefined;
-            this.operator = undefined;
+            this.operand1 = null;
+            this.reset = null;
+            this.operator = null;
             this.display = $('#txtExpression');
-            this.display.val('');
+            this.setText('');
         },
 
-        calculateAndDisplay: function () {
+        calculateAndDisplay: function (operand2) {
             var result;
             switch (this.operator) {
                 case '+':
-                    result = this.operand1 + this.operand2;
+                    result = this.operand1 + operand2;
                     break;
                 case '-':
-                    result = this.operand1 - this.operand2;
-                    break;
+                    result = this.operand1 - operand2;
             }
             this.operand1 = result;
-            this.operand2 = null;
             this.operator = null;
-            this.display.val(result);
+            this.setText(result);
             this.reset = true;
         },
 
@@ -43,10 +40,9 @@
 
     var handlers = {
         evaluate: function () {
-            if(calculator.operator) {
-                calculator.operand2 = parseFloat(calculator.getText());
-                 calculator.calculateAndDisplay();
-            }
+            if(!calculator.operator || calculator.getText() === '')  return;
+            calculator.calculateAndDisplay(parseFloat(calculator.getText()));
+            calculator.operator = $(this).val();
         },
 
         digit: function () {
@@ -62,18 +58,15 @@
         },
 
         operator: function () {
+            if(calculator.getText() === '')  return;
             var operator = $(this).val(),
                 operand = parseFloat(calculator.getText());
-            if(calculator.getText() === '')
-                return;
             if(calculator.operator) {
-                calculator.operand2 = operand;
-                calculator.calculateAndDisplay();
+                calculator.calculateAndDisplay(operand);
                 calculator.operator = operator;
             } else {
                 if(calculator.operand1) {
-                    calculator.operand2 = operand;
-                    calculator.calculateAndDisplay();
+                    calculator.calculateAndDisplay(operand);
                     calculator.operator = operator;
                 } else {
                     calculator.operator = operator;
@@ -91,4 +84,4 @@
         $('#evaluate').click(handlers.evaluate);
     }
 
-})(window.APP = window.APP || {}, jQuery);
+})({}, jQuery);
